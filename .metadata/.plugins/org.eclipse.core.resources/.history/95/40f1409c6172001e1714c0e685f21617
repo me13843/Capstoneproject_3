@@ -1,0 +1,10 @@
+Feature: Login to SauceDemo
+
+  Scenario: Verify Unsuccessful login
+    Given User is on the login page
+    When enter invalid username "locked_out_user" and password "secret_sauce"
+    When User clicks the login button
+    Then User should see an error message
+
+    
+  

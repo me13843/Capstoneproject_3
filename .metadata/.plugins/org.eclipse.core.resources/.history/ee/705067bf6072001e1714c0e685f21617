@@ -1,0 +1,19 @@
+Feature: Login to SauceDemo
+
+  Scenario: Verify successful login
+    Given User is on the login page
+    When User enters "<username>" and "<password>"
+    When enter invalid username "locked_out_user" and password "secret_sauce"
+    When User clicks the login button
+    Then User should be logged in and title should be "Swag Labs"
+    Then User should see an error message
+
+  Examples:
+    | username               | password       |
+    | standard_user          | secret_sauce   |
+    | problem_user           | secret_sauce   |
+    | performance_glitch_user| secret_sauce   |
+    | error_user             | secret_sauce   |
+    | visual_user            | secret_sauce   |
+    
+  

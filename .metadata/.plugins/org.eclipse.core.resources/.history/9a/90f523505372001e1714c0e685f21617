@@ -1,0 +1,48 @@
+package stepDefinitions;
+
+import java.io.File;
+
+import org.openqa.selenium.*;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+
+public class LoginStepDefinitions {
+	
+	public WebDriver driver;
+	public String driverPath = System.getProperty("user.dir")+File.separator+"Driver"+File.separator+"chromedriver.exe";
+	
+	@Given("User is on Login Page")
+	public void user_is_on_login_page() {
+		System.setProperty("webdriver.chrome.driver", driverPath);
+		System.setProperty("webdriver.http.factory", "jdk-http-client");
+		WebDriver driver = new ChromeDriver();
+		driver.get("https://www.saucedemo.com/");
+		driver.manage().window().maximize();
+		
+	}
+	@When("user enter valid username and password")
+	public void user_enter_valid_username_and_password() {
+		
+		WebElement userName = driver.findElement(By.xpath("//input[@id='user-name']"));
+		WebElement passWord = driver.findElement(By.xpath("//input[@id='password']"));
+		
+		userName.sendKeys("standard_user");
+		passWord.sendKeys("secret_sauce");
+	}
+	@When("user click the Submit button")
+	public void user_click_the_submit_button() {
+		
+		WebElement loginButton = driver.findElement(By.xpath("//input[@id='login-button']"));
+		
+		loginButton.click();
+	}
+	@Then("user should be on the Products page")
+	public void user_should_be_on_the_products_page() {
+		String title = driver.getTitle();
+		System.out.println(title);
+	}
+
+}

@@ -1,0 +1,15 @@
+Feature: Login to SauceDemo
+
+  Scenario: Verify successful login
+    Given User is on the login page
+    When User enters "<username>" and "<password>" from Excel
+    When User clicks the login button
+    Then User should be logged in and ttile should be "Swag Labs"
+    
+      Examples:
+    | standard_user							| secret_sauce
+		| problem_user							| secret_sauce
+		| performance_glitch_user		| secret_sauce
+		| error_user								| secret_sauce
+		| visual_user  							| secret_sauce
+    

@@ -1,0 +1,37 @@
+package stepDefinitions;
+
+import java.io.File;
+
+import org.openqa.selenium.*;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+
+public class LoginStepDefinitions {
+	
+	WebDriver driver;
+	public String driverPath = System.getProperty("user.dir")+File.separator+"Driver"+File.separator+"chromedriver.exe";
+	
+	@Given("User is on Login Page")
+	public void user_is_on_login_page() {
+		System.setProperty("WebDriver.chromedriver", driverPath);
+		WebDriver driver = new ChromeDriver();
+		driver.get("https://www.saucedemo.com/");
+	}
+	@When("user enter valid username and password")
+	public void user_enter_valid_username_and_password() {
+		
+		WebElement userName = driver.findElement(By.xpath("//input[@id='user-name']"));
+	}
+	@When("user click the Submit button")
+	public void user_click_the_submit_button() {
+
+	}
+	@Then("user should be on the Products page")
+	public void user_should_be_on_the_products_page() {
+
+	}
+
+}

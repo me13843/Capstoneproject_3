@@ -1,0 +1,48 @@
+package stepDefinitions;
+
+import java.io.File;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.testng.Assert;
+
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+
+public class LoginFailureDefinitions {
+	
+	public String driverPath = System.getProperty("user.dir")+File.separator+"Driver"+File.separator+"chromedriver.exe";
+	public String loginDetFilePath = System.getProperty("user.dir")+File.separator+"Input"+File.separator+"LoginData.xlsx";
+	public int index;
+	public WebDriver driver;
+	
+	@Given("User is on the login page")
+	public void user_is_on_login_page() {
+		System.setProperty("webdriver.chrome.driver", driverPath);
+		ChromeOptions options = new ChromeOptions();
+		options.addArguments("--remote-allow-origins=*");
+		driver = new ChromeDriver(options);
+		driver.get("https://www.saucedemo.com/");
+		driver.manage().window().maximize();
+		
+	}
+	@When("enter invalid username {string} and password {string}")
+	public void enter_invalid_username_and_password(String usName, String pwcd) {
+		System.out.println(usName);
+		System.out.println(pwcd);
+        WebElement usernameField = driver.findElement(By.id("user-name"));
+        WebElement passwordField = driver.findElement(By.id("password"));
+        usernameField.sendKeys(usName);
+        passwordField.sendKeys(pwcd);
+	}
+	@Then("User should see an error message")
+	 public void user_should_see_an_error_message() {
+	        WebElement errorMessage = driver.findElement(By.cssSelector(".error-message"));
+	        Assert.assertTrue(errorMessage.isDisplayed());
+	    }
+	
+}

@@ -1,0 +1,96 @@
+package stepDefinitions;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+
+public class LoginStepDefinitions {
+	
+	
+	public String driverPath = System.getProperty("user.dir")+File.separator+"Driver"+File.separator+"chromedriver.exe";
+	public String loginDetFilePath = System.getProperty("user.dir")+File.separator+"Input"+File.separator+"LoginData.xlsx";
+	public WebDriver driver;
+	
+	@Given("User is on the login page")
+	public void user_is_on_login_page() {
+		System.setProperty("webdriver.chrome.driver", driverPath);
+		ChromeOptions options = new ChromeOptions();
+		options.addArguments("--remote-allow-origins=*");
+		driver = new ChromeDriver(options);
+		driver.get("https://www.saucedemo.com/");
+		driver.manage().window().maximize();
+		
+	}
+	@When("User enters {string} and {string} from Excel")
+    public void user_enters_and_from_Excel(String username, String password) throws IOException {
+        String[][] data = readDataFromExcel(loginDetFilePath, "LoginData");
+        String numericPortion = username.replaceAll("[^0-9]", "");
+        if (!numericPortion.isEmpty()) {
+            int index = Integer.parseInt(numericPortion) - 1;
+        } else {
+            System.out.println("Invalid username: " + username);
+        }
+        username = data[index][0];
+        password = data[index][1];
+
+        WebElement usernameField = driver.findElement(By.id("username"));
+        WebElement passwordField = driver.findElement(By.id("password"));
+        usernameField.sendKeys(username);
+        passwordField.sendKeys(password);
+    }
+	@When("User clicks the login button")
+	public void user_clicks_login_button()
+	{
+        WebElement loginButton = driver.findElement(By.id("login-button"));
+        loginButton.click();
+	}
+
+	@Then("User should be logged in and ttile should be {string}")
+    public void user_should_be_on_the_products_page_and_title_should_be(String expectedTitle) throws InterruptedException {
+        String actualTitle = driver.getTitle();
+        if (actualTitle.equals(expectedTitle)) 
+        {
+            System.out.println("Test passed. The title is as expected: " + expectedTitle);
+        } else {
+            System.out.println("Test failed. Actual title: " + actualTitle);
+        }
+        driver.navigate().back();
+        Thread.sleep(500);
+    }
+	
+	private String[][] readDataFromExcel(String excelFilePath, String sheetName) throws IOException {
+	    FileInputStream excelFile = new FileInputStream(new File(excelFilePath));
+	    Workbook workbook = new XSSFWorkbook(excelFile);
+	    Sheet sheet = workbook.getSheet(sheetName);
+	    int rowCount = sheet.getLastRowNum() + 1;
+	    int colCount = sheet.getRow(0).getLastCellNum();
+
+	    String[][] data = new String[rowCount][colCount];
+	    for (int i = 0; i < rowCount; i++) {
+	        Row row = sheet.getRow(i);
+	        for (int j = 0; j < colCount; j++) {
+	            Cell cell = row.getCell(j);
+	            data[i][j] = cell.toString();
+	        }
+	    }
+
+	    excelFile.close();
+	    return data;
+	}
+	
+}
